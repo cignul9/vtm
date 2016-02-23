@@ -8,6 +8,14 @@ setup(
   author_email = 'cignul9@gmail.com',
   url = 'https://github.com/cignul9',
   download_url = 'https://github.com/cignul9/vtm/tarball/0.6',
+  install_requires=[
+    'json',
+    'sys',
+    'pprint',
+    're',
+    'request',
+    'warnings',
+  ],
   keywords = ['stingray', 'vtm', 'brocade', 'traffic manager', 'api'],
   classifiers = [],
 )
