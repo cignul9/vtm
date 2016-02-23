@@ -1,4 +1,4 @@
-__version__ = '0.4'
+__version__ = '0.6'
 __author__ = 'Shawn Magill'
 __all__ = [ 'VtmConnection', 'VtmConfig' ]
 
