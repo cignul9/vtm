@@ -1,5 +1,5 @@
 ## A python 3 module to facilitate using Brocade Virtual Traffic Manager's REST API
-### (a product formerly known as Riverbed's Stingray or Steelapp)
+### (a product formerly known as Riverbed's Stingray or SteelApp)
 
 #### Supported configuration entry types:
  - action_program
