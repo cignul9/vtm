@@ -38,7 +38,7 @@
 #### Installation
 pip install vtm
 
-#### Useage
+#### Usage
 ##### Example 1:
 
 ```
