@@ -7,9 +7,10 @@ from pprint import PrettyPrinter
 import re
 
 class VtmConnection:
-'''
-Facilitates interacting with an instance of Virtual Traffic Manager (Stingray)
-'''
+    '''
+    Facilitates interacting with an instance of Virtual Traffic Manager 
+    (Stingray)
+    '''
     def __init__(
             self,
             host,
@@ -347,9 +348,10 @@ Facilitates interacting with an instance of Virtual Traffic Manager (Stingray)
 
 
 class VtmConfig:
-'''
-Provides new default state VTM configuration data structures for a given type
-'''
+    '''
+    Provides new default state VTM configuration data structures for a given 
+    type
+    '''
     def __init__(self, api_version='latest', config_type='', to_console=True):
         # Add/edit this list of dicts to increase config functionality
         self.__all_configs = [
