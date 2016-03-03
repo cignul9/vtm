@@ -6,9 +6,10 @@ import warnings
 from pprint import PrettyPrinter
 import re
 
-# Interacting with an instance of Virtual Traffic Manager (Stingray) is
-# facilitated by this class
 class VtmConnection:
+'''
+Facilitates interacting with an instance of Virtual Traffic Manager (Stingray)
+'''
     def __init__(
             self,
             host,
@@ -26,6 +27,7 @@ class VtmConnection:
         self.port = port
         self.__session = requests.Session()
         self.__auth = (self.user, self.__password)
+        self.__pp = PrettyPrinter(indent=2)
         self.__to_console = to_console
         self.to_console = self.__to_console
         self.__active_config_url_suffix = 'config/active/'
@@ -164,6 +166,7 @@ class VtmConnection:
           auth=(self.user, self.__password),
         )
         self.__request_parameters['verify'] = verify_ssl
+        self.__api_version = None
         self.__api_url = self.api_url
     
     def __get_response(self, url):
@@ -243,8 +246,6 @@ class VtmConnection:
     @to_console.setter
     def to_console(self, to_console):
         self.__to_console = to_console
-        if self.__to_console:
-            self.__pp = PrettyPrinter(indent=2)
         return
     
     @property
@@ -275,7 +276,7 @@ class VtmConnection:
         self.api_version = float(response['children'][-1]['name'])
         if self.to_console:
             print('API version for {0}: {1}'.format(
-              self.host, self.__api_version
+              self.host, self.api_version
             ))
         return '{0}://{1}:{2}{3}'.format(
             self.protocol,
@@ -345,8 +346,10 @@ class VtmConnection:
         return self.__delete_response(request_url)
 
 
-# New structures for a given class of configurations are provided by this class.
 class VtmConfig:
+'''
+Provides new default state VTM configuration data structures for a given type
+'''
     def __init__(self, api_version='latest', config_type='', to_console=True):
         # Add/edit this list of dicts to increase config functionality
         self.__all_configs = [
@@ -882,6 +885,7 @@ one TIP, and pool as the name of the default pool',
                 'api_version': 3.7,
             },
         ]
+        self.__pp = PrettyPrinter(indent=2)
         self.__to_console = to_console
         self.to_console = self.__to_console
         self.__config = {}
@@ -904,8 +908,6 @@ one TIP, and pool as the name of the default pool',
     @to_console.setter
     def to_console(self, to_console):
         self.__to_console = to_console
-        if self.__to_console:
-            self.__pp = PrettyPrinter(indent=2)
         return
     
     @property
