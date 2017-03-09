@@ -18,7 +18,7 @@ class VtmConnection:
             password,
             protocol='https',
             port=9070,
-            verify_ssl=True,
+            verify_ssl=False,
             to_console=True,
     ):
         self.user = user
@@ -177,6 +177,8 @@ class VtmConnection:
                 response = self.__session.get(url, **self.__request_parameters)
         except requests.exceptions.ConnectionError:
             raise
+        if response.status_code == 404:
+            return False
         pattern = re.compile("^2\d{2}")
         if not pattern.match(str(response.status_code)):
             sys.stderr.write(
