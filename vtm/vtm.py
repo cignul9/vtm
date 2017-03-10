@@ -177,6 +177,8 @@ class VtmConnection:
                 response = self.__session.get(url, **self.__request_parameters)
         except requests.exceptions.ConnectionError:
             raise
+        if response.status_code == 404:
+            return False
         pattern = re.compile("^2\d{2}")
         if not pattern.match(str(response.status_code)):
             sys.stderr.write(
@@ -185,16 +187,29 @@ class VtmConnection:
                     response.status_code
             ))
             return False
+        if response.headers.get('content-type') == 'application/json':
+            returned_response = response.json()
+        elif response.headers.get('content-type') == 'application/octet-stream':
+            returned_response = response.text
+        else:
+            sys.stderr.write(
+                "ERROR: Invalid content-type from {0}.  : {1}".format(
+                    url,
+                    response.headers.get('content-type')
+            ))
+            return False
         if self.to_console:
-            self.__pp.pprint(response.json())
-        return response.json()
+            self.__pp.pprint(returned_response)
+        return returned_response
     
-    def __put_response(self, config, url):
+    def __put_response(self, config, url, content_type='application/json'):
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
+                params = self.__request_parameters
+                params['headers'] = {'Content-Type': content_type}
                 response = self.__session.put(
-                    url, data=config, **self.__request_parameters
+                    url, data=config, **params
                 )
         except requests.exceptions.ConnectionError:
             raise
@@ -217,7 +232,13 @@ class VtmConnection:
                     response.status_code
             ))
             return False
-        return response.json()
+        if response.headers.get('content-type') == 'application/json':
+            returned_response = response.json()
+        elif response.headers.get('content-type') == 'application/octet-stream':
+            returned_response = response.text
+        else:
+            returned_response={}
+        return returned_response
     
     def __delete_response(self, url):
         try:
@@ -329,8 +350,14 @@ class VtmConnection:
             type_url_suffix,
             name,
         )
-        json_config = json.dumps(config)
-        return self.__put_response(json_config, request_url)
+        if type(config) is dict:
+            return self.__put_response(json.dumps(config), request_url)
+        elif type(config) is str:
+            return self.__put_response(config, request_url, 'application/octet-stream')
+        else:
+            sys.stderr.write("ERROR: Unexpected config type")
+            return False
+        
     
     # For deleting an entry of the specified type
     def delete_config(self, config_type, name):
