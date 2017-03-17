@@ -4,6 +4,7 @@ import json
 import sys
 import warnings
 from pprint import PrettyPrinter
+from distutils.version import StrictVersion
 import re
 
 class VtmConnection:
@@ -294,8 +295,11 @@ class VtmConnection:
             self.to_console = True
         if not response:
             return False
-        api_suffix = response['children'][-1]['href']
-        self.api_version = float(response['children'][-1]['name'])
+        self.api_version = '0.0'
+        for version in response['children']:
+            if StrictVersion(version['name']) > StrictVersion(self.api_version ):
+                self.api_version = version['name']
+                api_suffix = version['href']
         if self.to_console:
             print('API version for {0}: {1}'.format(
               self.host, self.api_version
